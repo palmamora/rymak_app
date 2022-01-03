@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rymak/source/pages/user_page.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage({Key? key}) : super(key: key);
@@ -45,6 +46,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _login() {
-    Navigator.pushNamed(context, "/user");
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) => UserPage()));
   }
 }
