@@ -1,4 +1,4 @@
-#Wed Dec 08 22:13:24 CLST 2021
+#Mon Jan 03 04:32:30 CLST 2022
 base.0=C\:\\Users\\manuel\\Documents\\workspaces\\rymak_app\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\classes.dex
 renamed.0=classes.dex
 path.0=classes.dex

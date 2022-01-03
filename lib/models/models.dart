@@ -15,15 +15,19 @@ class Contratos {
 }
 
 class Contrato {
-  final String idContrato;
-  final String titleContrato;
-  final String emailContrato;
+  final String codigo;
+  final String direccion;
+  final String comuna;
+  final String contacto;
+  final String telefono;
   final List<dynamic> unidades;
 
   Contrato({
-    required this.idContrato,
-    required this.titleContrato,
-    required this.emailContrato,
+    required this.codigo,
+    required this.direccion,
+    required this.comuna,
+    required this.contacto,
+    required this.telefono,
     required this.unidades,
   });
 
@@ -31,27 +35,35 @@ class Contrato {
     var list = parsedJson['unidades'];
     List<dynamic> unidadesList = list.map((i) => Unidad.fromJson(i)).toList();
     return Contrato(
-      idContrato: parsedJson['idContrato'],
-      titleContrato: parsedJson['titleContrato'],
-      emailContrato: parsedJson['emailContrato'],
+      codigo: parsedJson['codigo'],
+      direccion: parsedJson['direccion'],
+      comuna: parsedJson['comuna'],
+      contacto: parsedJson['contacto'],
+      telefono: parsedJson['telefono'],
       unidades: unidadesList,
     );
   }
 }
 
 class Unidad {
-  final String? idUnidad;
-  final String? typeUnidad;
+  final String? tipo;
+  final String? noUnidad;
+  final String? nfc;
+  final int? cantidad;
 
   Unidad({
-    required this.idUnidad,
-    required this.typeUnidad,
+    required this.tipo,
+    required this.noUnidad,
+    required this.nfc,
+    required this.cantidad,
   });
 
   factory Unidad.fromJson(Map<String, dynamic> parsedJson) {
     return Unidad(
-      idUnidad: parsedJson['idUnidad'],
-      typeUnidad: parsedJson['typeUnidad'],
+      tipo: parsedJson['tipo'],
+      noUnidad: parsedJson['no_unidad'],
+      nfc: parsedJson['nfc'],
+      cantidad: parsedJson['cantidad'],
     );
   }
 }

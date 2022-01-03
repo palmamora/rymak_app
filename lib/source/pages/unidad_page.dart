@@ -88,7 +88,8 @@ class UnidadPageState extends State<UnidadPage> {
 
   void _tomarFoto() async {
     ImagePicker _picker = ImagePicker();
-    XFile? _tempImage = await _picker.pickImage(source: ImageSource.camera);
+    XFile? _tempImage = await _picker.pickImage(
+        source: ImageSource.camera, maxWidth: 1280, maxHeight: 720);
     if (_tempImage == null) return;
     image = File(_tempImage.path);
     setState(() {});
@@ -97,8 +98,17 @@ class UnidadPageState extends State<UnidadPage> {
   void _enviarFoto() async {
     String base64 = base64Encode(image.readAsBytesSync());
     String imageName = image.path.split("/").last;
-    var data = {"imageName": imageName, "image64": base64};
-    var url = Uri.parse('http://palma-mora.000webhostapp.com/index.php');
+    var data = {
+      "token": "WfjQzG4cSnSENv6ukFQo7FiaAxbP19qwYdij",
+      "username": "CTS3947",
+      "archivo": imageName,
+      "image64": base64,
+      "nfc": "123",
+      "unidad": "123",
+      "comentario": "OK DON LEONARDO",
+    };
+    var url = Uri.parse(
+        'http://186.10.30.50:8081/include/adaptiva/app_postserviciorealizado.php');
     var response = await http.post(
       url,
       headers: {
@@ -107,6 +117,6 @@ class UnidadPageState extends State<UnidadPage> {
       },
       body: jsonEncode(data),
     );
-    print(response.statusCode);
+    print(response.body);
   }
 }

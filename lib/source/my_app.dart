@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:rymak/source/pages/login_page.dart';
 import 'package:rymak/source/pages/unidad_page.dart';
 import 'package:rymak/source/pages/user_page.dart';
 
@@ -8,9 +9,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: "/user",
+      theme: ThemeData(),
+      darkTheme: ThemeData.dark(),
+      initialRoute: "/login",
       routes: {
         "/user": (BuildContext context) => UserPage(),
+        "/login" : (BuildContext context) => LoginPage(),
       },
     );
   }
