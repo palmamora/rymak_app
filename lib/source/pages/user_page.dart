@@ -7,59 +7,28 @@ import 'package:rymak/models/models.dart';
 import 'package:rymak/source/pages/unidad_page.dart';
 
 class UserPage extends StatefulWidget {
-  const UserPage({Key? key}) : super(key: key);
+  dynamic data;
+
+  UserPage(this.data);
 
   @override
   _UserPageState createState() => _UserPageState();
 }
 
 class _UserPageState extends State<UserPage> {
-  final String username = "";
-  final String password = "";
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Contratos'),
-        leading: Icon(Icons.home),
-      ),
-      body: Container(
-        child: FutureBuilder(
-          future: _getContratos(),
-          builder: (_, snapshot) {
-            if (!snapshot.hasData) {
-              return Center(child: CircularProgressIndicator());
-            }
-            return _ListaContratos(snapshot.data);
-          },
+        appBar: AppBar(
+          title: Text('Contratos'),
+          leading: Icon(Icons.home),
+          actions: [
+            IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.exit_to_app))
+          ],
         ),
-      ),
-    );
+        body: _ListaContratos(widget.data));
   }
 
-  Future<dynamic> _getContratos() async {
-    var headers = {'Content-Type': 'application/json'};
-    var request = http.Request(
-        'POST',
-        Uri.parse(
-            'http://186.10.30.50:8081/include/adaptiva/app_getvalidation.php'));
-    request.body = json.encode({
-      "token": "WfjQzG4cSnSENv6ukFQo7FiaAxbP19qwYdij",
-      "username": "CTS3947",
-      "password": "123456"
-    });
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      var data = await response.stream.bytesToString();
-      return data;
-    } else {
-      print(response.reasonPhrase);
-    }
-  }
 }
 
 class _ListaContratos extends StatelessWidget {
