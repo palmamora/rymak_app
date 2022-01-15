@@ -27,29 +27,45 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
-        padding: EdgeInsets.symmetric(horizontal: 40, vertical: 120),
-        child: _isLoading
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : Column(
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : Container(
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [
+                  Colors.blue.shade200,
+                  Colors.red.shade200,
+                ],
+              )),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Image.asset('assets/images/logo_rymak.png'),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/images/logo_rymak.png',
+                        width: MediaQuery.of(context).size.width * 0.75,
+                      )
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
-                      decoration: InputDecoration(labelText: "Usuario"),
+                      decoration: InputDecoration(
+                          labelText: "Usuario", icon: Icon(Icons.person)),
                       controller: _userController,
                     ),
                   ),
-                  Padding(
-                    padding: EdgeInsets.all(10),
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: TextField(
-                      decoration: InputDecoration(labelText: "Contraseña"),
+                      decoration: InputDecoration(
+                          labelText: "Contraseña", icon: Icon(Icons.password)),
                       controller: _passController,
                     ),
                   ),
@@ -67,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Text("Iniciar Sesión"))
                 ],
               ),
-      ),
+            ),
     );
   }
 

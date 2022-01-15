@@ -15,6 +15,7 @@ class Contratos {
 }
 
 class Contrato {
+  final String id;
   final String codigo;
   final String direccion;
   final String comuna;
@@ -23,6 +24,7 @@ class Contrato {
   final List<dynamic> unidades;
 
   Contrato({
+    required this.id,
     required this.codigo,
     required this.direccion,
     required this.comuna,
@@ -33,8 +35,10 @@ class Contrato {
 
   factory Contrato.fromJson(Map<String, dynamic> parsedJson) {
     var list = parsedJson['unidades'];
-    List<dynamic> unidadesList = list.map((i) => Unidad.fromJson(i)).toList();
+    List<dynamic> unidadesList = [];
+    unidadesList = list.map((i) => Unidad.fromJson(i)).toList();
     return Contrato(
+      id: parsedJson['id'],
       codigo: parsedJson['codigo'],
       direccion: parsedJson['direccion'],
       comuna: parsedJson['comuna'],
@@ -62,7 +66,7 @@ class Unidad {
     return Unidad(
       tipo: parsedJson['tipo'],
       noUnidad: parsedJson['no_unidad'],
-      nfc: parsedJson['nfc'],
+      nfc: parsedJson['nfc'].toString(),
       cantidad: parsedJson['cantidad'],
     );
   }

@@ -23,77 +23,128 @@ class _UserPageState extends State<UserPage> {
           title: Text('Contratos'),
           leading: Icon(Icons.home),
           actions: [
-            IconButton(onPressed: () => Navigator.pop(context), icon: Icon(Icons.exit_to_app))
+            IconButton(
+                onPressed: () => Navigator.pop(context),
+                icon: Icon(Icons.exit_to_app))
           ],
         ),
-        body: _ListaContratos(widget.data));
+        body: _body(widget.data));
   }
 
-}
-
-class _ListaContratos extends StatelessWidget {
-  final dynamic data;
-
-  _ListaContratos(this.data);
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _body(dynamic data) {
     List result = convert.jsonDecode(data);
     print(result);
     Contratos contratos = Contratos.fromJson(result);
-    List<ExpansionTile> contratosLista = contratos.contratos
-        .map((e) => ExpansionTile(
-              title: Text('Contrato: ${e.codigo}',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
-              leading: Icon(Icons.person),
+    List<ExpansionTile> contratosWidgets = _contratosWidgets(contratos);
+    return ListTileTheme(
+      contentPadding: EdgeInsets.all(15),
+      child: ListView(
+        children: contratosWidgets,
+      ),
+    );
+  }
+
+  List<ExpansionTile> _contratosWidgets(Contratos contratos) {
+    List<ExpansionTile> contratosWidgets = contratos.contratos
+        .map((Contrato contrato) => ExpansionTile(
+              backgroundColor: Colors.orange[100],
+              title: Text(contrato.codigo,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
+              leading: Image.asset(
+                "assets/images/contrato.png",
+                scale: 7,
+              ),
               subtitle: Column(
                 children: [
-                  Row(children: [Text("Comuna: ${e.comuna}")]),
                   Row(children: [
-                    Expanded(child: Text("Dirección: ${e.direccion}"))
+                    Expanded(
+                      child: Text(
+                        contrato.direccion,
+                        style: TextStyle(fontSize: 24),
+                      ),
+                    )
+                  ]),
+                  Row(children: [
+                    Expanded(
+                        child: Text(contrato.comuna,
+                            style: TextStyle(fontSize: 24)))
+                  ]),
+                  Row(children: [
+                    Expanded(
+                        child: Text(contrato.telefono,
+                            style: TextStyle(fontSize: 24)))
+                  ]),
+                  Row(children: [
+                    Expanded(
+                        child: Text(contrato.contacto,
+                            style: TextStyle(fontSize: 24)))
                   ])
                 ],
               ),
-              children: e.unidades
-                  .map((u) => ListTile(
-                        title: Text(
-                          'Nro unidad: ${u.noUnidad}',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                          textAlign: TextAlign.center,
+              children: contrato.unidades.map((dynamic unidad) {
+                return ListTile(
+                  trailing: (unidad.tipo != "PUNTO DE AGUA")
+                      ? Image.asset(
+                          "assets/images/chemical_bath.png",
+                          scale: 7,
+                        )
+                      : Image.asset(
+                          "assets/images/chemical_bath.png",
+                          scale: 7,
                         ),
-                        subtitle: Column(
+                  title: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        '${unidad.tipo}    ',
+                        style: TextStyle(fontSize: 24),
+                        textAlign: TextAlign.start,
+                      ),
+                      Text(
+                        "#${unidad.noUnidad}",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 26),
+                      ),
+                    ],
+                  ),
+                  /*
+                  subtitle: Column(
+                    children: [
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Tipo: ${u.tipo}",
-                                    textAlign: TextAlign.center,
-                                  )
-                                ]),
-                            Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Cantidad: ${u.cantidad}",
-                                    textAlign: TextAlign.center,
-                                  )
-                                ])
-                          ],
-                        ),
-                        onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => UnidadPage("${u.noUnidad}"),
-                            )),
-                      ))
-                  .toList(),
+                            Text(
+                              "${unidad.tipo}",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 24),
+                            )
+                          ]),
+                      /*
+                      Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Cantidad: ${unidad.cantidad}",
+                              textAlign: TextAlign.center,
+                            )
+                          ])
+                          */
+                    ],
+                  ),
+                  */
+                  onTap: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return UnidadPage(
+                          unidad.noUnidad, contrato.codigo, contrato.id);
+                    },
+                  )),
+                );
+              }).toList(),
             ))
         .toList();
-    return ListView(
-      children: contratosLista,
-    );
+    return contratosWidgets;
   }
 }
