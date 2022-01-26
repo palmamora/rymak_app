@@ -5,14 +5,19 @@ import 'package:flutter/services.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:rymak/widgets/generals.dart';
 import './../../models/nfc_models.dart';
 
 class UnidadPage extends StatefulWidget {
   String noUnidad;
+  String idUnidad;
   String codigoContrato;
   String idContrato;
+  int contratoIndex;
+  int unidadIndex;
 
-  UnidadPage(this.noUnidad, this.codigoContrato, this.idContrato);
+  UnidadPage(this.noUnidad, this.idUnidad, this.codigoContrato, this.idContrato,
+      this.contratoIndex, this.unidadIndex);
 
   @override
   State<UnidadPage> createState() => UnidadPageState();
@@ -188,29 +193,76 @@ class UnidadPageState extends State<UnidadPage> {
   void _enviarFoto() async {
     String base64 = base64Encode(imagen.readAsBytesSync());
     String imageName = imagen.path.split("/").last;
+    bool error = false;
     var data = {
       "token": "WfjQzG4cSnSENv6ukFQo7FiaAxbP19qwYdij",
       "username": "CTS3947",
       "nfc": _nfcController.text,
       "unidad": widget.noUnidad,
       "contrato": widget.codigoContrato,
-      "id": widget.idContrato,
+      "contratoid": widget.idContrato,
+      "unidadid": widget.idUnidad,
       "comentario": _comentarioController.text,
       "archivo": imageName,
       "image64": base64,
     };
     print(data);
+
     var url = Uri.parse(
         'http://186.10.30.50:8081/include/adaptiva/app_postserviciorealizado.php');
-    var response = await http.post(
-      url,
-      headers: {
-        "Accept": "application/json",
-        "Access-Control_Allow_Origin": "*",
-      },
-      body: jsonEncode(data),
-    );
-    print(response.body);
+    try {
+      var response = await http.post(
+        url,
+        headers: {
+          "Accept": "application/json",
+          "Access-Control_Allow_Origin": "*",
+        },
+        body: jsonEncode(data),
+      );
+      print(response.statusCode);
+    } on Exception catch (e) {
+      error = true;
+    }
+
+    if (!error) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Icon(
+                  Icons.check,
+                  color: Colors.green,
+                ),
+                content: Text("Éxito", textAlign: TextAlign.center),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop("enviado");
+                      },
+                      child: const Text("Aceptar"))
+                ],
+              ));
+    } else {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Icon(
+                  Icons.check,
+                  color: Colors.red,
+                ),
+                content: Text("Error Inesperado", textAlign: TextAlign.center),
+                actionsAlignment: MainAxisAlignment.center,
+                actions: [
+                  TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop("no enviado");
+                      },
+                      child: const Text("Aceptar"))
+                ],
+              ));
+    }
   }
 
   Container _nfcTextField() {

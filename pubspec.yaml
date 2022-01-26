@@ -38,6 +38,7 @@ dependencies:
   nfc_manager: ^3.1.0
   image_picker: ^0.8.4+4
   dio: ^4.0.4
+  localstorage: ^4.0.0
 
 dev_dependencies:
   flutter_test:
@@ -67,6 +68,8 @@ flutter:
     - assets/images/chemical_bath.png
     - assets/images/contrato.png
     - assets/images/llave.png
+    - assets/gifs/successful.gif
+    - assets/gifs/unsuccessful.gif
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

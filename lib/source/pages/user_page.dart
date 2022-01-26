@@ -7,9 +7,9 @@ import 'package:rymak/models/models.dart';
 import 'package:rymak/source/pages/unidad_page.dart';
 
 class UserPage extends StatefulWidget {
-  dynamic data;
+  Contratos contratos;
 
-  UserPage(this.data);
+  UserPage(this.contratos);
 
   @override
   _UserPageState createState() => _UserPageState();
@@ -28,14 +28,11 @@ class _UserPageState extends State<UserPage> {
                 icon: Icon(Icons.exit_to_app))
           ],
         ),
-        body: _body(widget.data));
+        body: _body());
   }
 
-  Widget _body(dynamic data) {
-    List result = convert.jsonDecode(data);
-    print(result);
-    Contratos contratos = Contratos.fromJson(result);
-    List<ExpansionTile> contratosWidgets = _contratosWidgets(contratos);
+  Widget _body() {
+    List<ExpansionTile> contratosWidgets = _contratosWidgets(widget.contratos);
     return ListTileTheme(
       contentPadding: EdgeInsets.all(15),
       child: ListView(
@@ -46,7 +43,7 @@ class _UserPageState extends State<UserPage> {
 
   List<ExpansionTile> _contratosWidgets(Contratos contratos) {
     List<ExpansionTile> contratosWidgets = contratos.contratos
-        .map((Contrato contrato) => ExpansionTile(
+        .map((contrato) => ExpansionTile(
               backgroundColor: Colors.orange[100],
               title: Text(contrato.codigo,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 26)),
@@ -82,7 +79,17 @@ class _UserPageState extends State<UserPage> {
                 ],
               ),
               children: contrato.unidades.map((dynamic unidad) {
+                Icon icono;
+                try {
+                  icono = (unidad.estado == 1)
+                      ? Icon(Icons.check)
+                      : Icon(Icons.close);
+                } catch (e) {
+                  icono = Icon(Icons.close);
+                }
+
                 return ListTile(
+                  /*
                   trailing: (unidad.tipo != "PUNTO DE AGUA")
                       ? Image.asset(
                           "assets/images/chemical_bath.png",
@@ -92,6 +99,8 @@ class _UserPageState extends State<UserPage> {
                           "assets/images/chemical_bath.png",
                           scale: 7,
                         ),
+                  */
+                  trailing: icono,
                   title: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -135,12 +144,25 @@ class _UserPageState extends State<UserPage> {
                     ],
                   ),
                   */
-                  onTap: () => Navigator.push(context, MaterialPageRoute(
-                    builder: (context) {
-                      return UnidadPage(
-                          unidad.noUnidad, contrato.codigo, contrato.id);
-                    },
-                  )),
+                  onTap: () async {
+                    int estado2 =
+                        await Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return UnidadPage(unidad.noUnidad, unidad.idUnidad,
+                            contrato.codigo, contrato.id, 0, 0);
+                      },
+                    ));
+                    setState(() {
+                      print(estado2);
+                      try {
+                        icono = (estado2 == 1)
+                            ? Icon(Icons.check)
+                            : Icon(Icons.close);
+                      } catch (e) {
+                        icono = Icon(Icons.close);
+                      }
+                    });
+                  },
                 );
               }).toList(),
             ))

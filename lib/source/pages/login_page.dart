@@ -1,7 +1,10 @@
 import 'dart:convert';
 import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
+import 'package:localstorage/localstorage.dart';
+import 'package:rymak/models/models.dart';
 import 'package:rymak/source/pages/user_page.dart';
+import 'package:rymak/source/pages/user_page_2.dart';
 
 class LoginPage extends StatefulWidget {
   LoginPage();
@@ -13,6 +16,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
   dynamic _formKey = GlobalKey<FormState>();
+  final LocalStorage storage = new LocalStorage("rymak_app");
 
   final _userController = TextEditingController();
   final _passController = TextEditingController();
@@ -22,6 +26,7 @@ class _LoginPageState extends State<LoginPage> {
     _userController.dispose();
     _passController.dispose();
     super.dispose();
+    _obtenerCredenciales();
   }
 
   @override
@@ -88,6 +93,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<dynamic> _login() async {
+    _guardarCredenciales();
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
         'POST',
@@ -104,10 +110,25 @@ class _LoginPageState extends State<LoginPage> {
 
     if (response.statusCode == 200) {
       var data = await response.stream.bytesToString();
+      List<dynamic> result = jsonDecode(data);
+      print(result);
+      Contratos contratos = Contratos.fromJson(result);
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (context) => UserPage(data)));
+          .push(MaterialPageRoute(builder: (context) => UserPage2(contratos)));
     } else {
       print(response.reasonPhrase);
     }
+  }
+
+  void _guardarCredenciales() {
+    storage.setItem("username", _userController.text);
+    storage.setItem("password", _passController.text);
+  }
+
+  void _obtenerCredenciales() {
+    try {
+      _userController.text = storage.getItem("username");
+      _passController.text = storage.getItem("password");
+    } catch (e) {}
   }
 }
